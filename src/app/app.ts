@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('mini-crm');
-  public montitle = "mon mini crm"
+  public montitle = "Hello, mini-crm"
 }

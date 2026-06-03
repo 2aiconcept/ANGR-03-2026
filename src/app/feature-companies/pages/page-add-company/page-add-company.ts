@@ -6,4 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './page-add-company.html',
   styleUrl: './page-add-company.css',
 })
-export class PageAddCompany {}
+export default class PageAddCompany {}
