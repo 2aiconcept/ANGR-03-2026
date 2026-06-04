@@ -8,8 +8,12 @@ export class Auth {
   // isAuthenticated property
   isAuthenticated = false;
 
-  login() {
-    this.isAuthenticated = true;
+  signin() {
+    // this.isAuthenticated = true;
+  }
+
+  signup() {
+    // this.isAuthenticated = true;
   }
 
   logout( ) {

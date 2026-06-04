@@ -9,7 +9,7 @@
         connexion ou inscription
     </h2>
 
-    <form class="d-flex flex-column gap-3">
+    <form class="d-flex flex-column gap-3" (submit)="onSubmit($event)">
       <div>
         <label for="email" class="form-label">Adresse e-mail</label>
         <input
@@ -18,10 +18,17 @@
           class="form-control"
           autocomplete="email"
           aria-describedby="email-errors"
+          [formField]="connectForm.email"
+          [attr.aria-invalid] = "connectForm.email().touched() && connectForm.email().invalid()"
+          aria-describedby="email-errors"
         />
+        @if (connectForm.email().touched() && connectForm.email().invalid()) {
           <div id="email-errors" class="text-danger small mt-1" aria-live="polite">
-              <div>msg error</div>
+              @for (error of connectForm.email().errors(); track error.kind) {
+              <div>{{ error.message }}</div>
+                }
           </div>
+        }
       </div>
 
       <div>
@@ -31,22 +38,29 @@
           type="text"
           class="form-control"
           aria-describedby="password-errors"
+          [formField]="connectForm.password"
+          [attr.aria-invalid]="connectForm.password().touched() && connectForm.password().invalid()"
+          aria-describedby="password-errors"
         />
+        @if (connectForm.password().touched() && connectForm.password().invalid()) {
           <div id="password-errors" class="text-danger small mt-1" aria-live="polite">
-              <div>error msg</div>
+              @for (error of connectForm.password().errors(); track error.kind) {
+              <div>{{ error.message }}</div>
+                }
           </div>
+        }
       </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="connectForm().invalid()">
+      <button type="submit" class="btn btn-primary" [disabled]="connectForm().invalid()"  (click)="login($event)">
         se connecter ou s'inscrire
       </button>
     </form>
 
     <p class="text-center mt-3 mb-0">
-        Pas encore de compte ?
+        <!-- Pas encore de compte ?
         <button type="button" class="btn btn-link p-0 align-baseline">
           Créer un compte
-        </button>
+        </button> -->
         Déjà un compte ?
         <button type="button" class="btn btn-link p-0 align-baseline">
           Se connecter
