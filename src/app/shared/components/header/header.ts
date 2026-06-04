@@ -6,4 +6,10 @@ import { Component } from '@angular/core';
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export class Header {}
+export class Header {
+
+  // propriete auth = inject du servce pour pouvoir utiliser auth.isAuthenticated du service dan le html
+
+  // protected logout() pour déconnexion via une methode du service
+
+}
