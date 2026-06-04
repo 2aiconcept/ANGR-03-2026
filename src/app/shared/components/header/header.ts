@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,9 @@ import { Component } from '@angular/core';
 export class Header {
 
   // propriete auth = inject du servce pour pouvoir utiliser auth.isAuthenticated du service dan le html
-
+  auth = inject(Auth);
   // protected logout() pour déconnexion via une methode du service
-
+  logout() {
+    this.auth.logout()
+  }
 }
