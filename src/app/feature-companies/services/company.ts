@@ -1,7 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Company } from '../models/company';
+import { Company, CompanyPayload } from '../models/company';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 
 const API_URL = `${environment.apiBaseUrl}/entreprises`;
 @Injectable({
@@ -36,6 +37,10 @@ export class CompanyService {
   // function to get one company with id using HttpClient
 
   // function to add company using HttpClient
+  /** Crée une entreprise. */
+  create(payload: CompanyPayload): Observable<Company> {
+    return this.http.post<Company>(API_URL, payload);
+  }
 
   // function to delete company using HttpClient
   /** Supprime une entreprise puis retire la ligne de la liste locale. */
