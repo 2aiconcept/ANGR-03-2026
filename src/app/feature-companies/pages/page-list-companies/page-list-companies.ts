@@ -31,6 +31,13 @@ export default class PageListCompanies implements OnInit {
     this.companies().find((company) => company.id === this.pendingDeleteId()) ?? null,
   );
 
+  protected readonly confirmMessage = computed(() => {
+    const company = this.pendingCompany();
+    return company
+      ? `Voulez-vous vraiment supprimer « ${company.nom} » ? Cette action est irréversible.`
+      : '';
+  });
+
   ngOnInit(): void {
     this.companyService.load();
     console.log(this.companies())
