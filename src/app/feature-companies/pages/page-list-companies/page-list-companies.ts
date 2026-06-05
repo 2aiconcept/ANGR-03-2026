@@ -1,14 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CompanyService } from '../../services/company';
 import { Router } from '@angular/router';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-page-list-companies',
-  imports: [],
+  imports: [JsonPipe],
   templateUrl: './page-list-companies.html',
   styleUrl: './page-list-companies.css',
 })
-export default class PageListCompanies {
+export default class PageListCompanies implements OnInit {
   // INJECT COMPANY SERVICE
   private readonly companyService = inject(CompanyService);
 
@@ -20,9 +21,19 @@ export default class PageListCompanies {
   // SIGNAL FOR API ERRORS
   protected readonly error = this.companyService.error;
 
+  ngOnInit(): void {
+    this.companyService.load();
+    console.log(this.companies())
+  }
+
+
   // SIGNAL  COMPUTED TO PASS COMPANY NAME TO DIALOG BOX WITH PERSONNAL MESSAGE
 
   // METHOD TO REDIRECT TO ADD
+  /** Redirige vers le formulaire d'ajout d'une entreprise. */
+  protected onAddCompany(): void {
+    this.router.navigate(['/add-company']);
+  }
 
   // METHOD TO OPEN DIALOG BOX
 

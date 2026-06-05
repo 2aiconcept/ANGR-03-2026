@@ -7,9 +7,13 @@
 </div>
 
 <!-- IF ERRORS DISPLAY ERRORS -->
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
 
 <!-- TABLE DE DISPLAY COMPANIES -->
-    <!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->
+    <!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->*
+<div>{{ companies() | json }}</div>
 
 <!-- BOITE DE DIALOGUE TO CONFIRM DELETE COMPANY -->
     <!-- A COMPONENT TO CONFIRM DELETE -->

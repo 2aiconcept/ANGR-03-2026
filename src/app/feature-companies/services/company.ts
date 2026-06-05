@@ -1,7 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Company } from '../models/company';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
+const API_URL = `${environment.apiBaseUrl}/entreprises`;
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +27,7 @@ export class CompanyService {
     // remmetre à null le signal errorSignal
     this.errorSignal.set(null);
     // call api
-    this.http.get<Company[]>('https://mini-crm-api-production-298d.up.railway.app/api/entreprises').subscribe({
+    this.http.get<Company[]>(API_URL).subscribe({
       next : (companies) => this.companiesSignal.set(companies),
       error: () => this.errorSignal.set("Impossible de charger les entreprises")
     })
