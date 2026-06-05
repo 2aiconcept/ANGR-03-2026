@@ -4,7 +4,7 @@
   </header>
 
   <div class="d-flex flex-grow-1 overflow-hidden">
-   @if (auth.isAuthenticated) {
+   @if (auth.isAuthenticated()) {
       <nav class="app-sidebar flex-shrink-0 h-100 overflow-auto border-end bg-light">
         <app-nav />
       </nav>

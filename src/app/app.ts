@@ -12,5 +12,6 @@ import { Auth } from './shared/services/auth';
 })
 export class App {
   // inject le service auth to get isAuthendicated property and use it in html
-  auth = inject(Auth)
+  protected readonly auth = inject(Auth);
+
 }

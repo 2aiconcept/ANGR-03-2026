@@ -1,12 +1,11 @@
 <div class="card shadow-sm connect-card mx-auto">
   <div class="card-body">
     <h2 class="h4 card-title mb-4">
-      <!-- @if (mode() === 'signin') {
+      @if (mode() === 'signin') {
         Connexion
       } @else {
         Inscription
-      } -->
-        connexion ou inscription
+      }
     </h2>
 
     <form class="d-flex flex-column gap-3" (submit)="onSubmit($event)">
@@ -51,20 +50,23 @@
         }
       </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="connectForm().invalid()"  (click)="login($event)">
-        se connecter ou s'inscrire
+      <button type="submit" class="btn btn-primary" [disabled]="connectForm().invalid()">
+        se connecter
       </button>
     </form>
 
     <p class="text-center mt-3 mb-0">
-        <!-- Pas encore de compte ?
-        <button type="button" class="btn btn-link p-0 align-baseline">
+        @if (mode() === 'signin') {
+        Pas encore de compte ?
+        <button type="button" class="btn btn-link p-0 align-baseline" (click)="toggleMode()">
           Créer un compte
-        </button> -->
+        </button>
+      } @else {
         Déjà un compte ?
-        <button type="button" class="btn btn-link p-0 align-baseline">
+        <button type="button" class="btn btn-link p-0 align-baseline" (click)="toggleMode()">
           Se connecter
         </button>
+      }
     </p>
   </div>
 </div>

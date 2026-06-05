@@ -10,9 +10,9 @@ import { Auth } from '../../services/auth';
 export class Header {
 
   // propriete auth = inject du servce pour pouvoir utiliser auth.isAuthenticated du service dan le html
-  auth = inject(Auth);
+  protected readonly auth = inject(Auth);
   // protected logout() pour déconnexion via une methode du service
-  logout() {
+  protected logout(): void {
     this.auth.logout()
   }
 }
