@@ -38,6 +38,14 @@ export class CompanyService {
   // function to add company using HttpClient
 
   // function to delete company using HttpClient
+  /** Supprime une entreprise puis retire la ligne de la liste locale. */
+  remove(id: number): void {
+    this.errorSignal.set(null);
+    this.http.delete<void>(`${API_URL}/${id}`).subscribe({
+      next: () => this.companiesSignal.update((list) => list.filter((company) => company.id !== id)),
+      error: () => this.errorSignal.set("Impossible de supprimer l'entreprise."),
+    });
+  }
 
   // function to update a company using HttpClient
 }

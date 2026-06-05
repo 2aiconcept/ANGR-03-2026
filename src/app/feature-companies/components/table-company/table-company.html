@@ -10,33 +10,36 @@
     </tr>
   </thead>
   <tbody>
-    <!-- boucle for -->
+    @for (company of companies(); track company.id) {
       <tr>
-        <td>nom</td>
-        <td>secteur</td>
-        <td>adresse</td>
-        <td>tet</td>
+        <td>{{ company.nom }}</td>
+        <td>{{ company.secteur }}</td>
+        <td>{{ company.adresse }}</td>
+        <td>{{ company.telephone }}</td>
         <td class="text-end">
           <div class="btn-group" role="group">
             <button
               type="button"
               class="btn btn-sm btn-outline-primary"
+              (click) = "editCompanyFn(company.id)"
             >
               Éditer
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
+              (click) = "deleteCompanyFn(company.id)"
             >
               Supprimer
             </button>
           </div>
         </td>
       </tr>
-   <!-- fin du for -->
-    <!-- liste vide -->
+    }
+    @empty {
       <tr>
         <td colspan="5" class="text-center text-muted">Aucune entreprise à afficher.</td>
       </tr>
+    }
   </tbody>
 </table>

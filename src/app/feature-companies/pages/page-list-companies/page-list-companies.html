@@ -13,8 +13,20 @@
 
 <!-- TABLE DE DISPLAY COMPANIES -->
     <!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->*
-<div>{{ companies() | json }}</div>
+<app-table-company 
+    [companies]="companies()"
+    (editCompany)="editItem($event)"
+    (deleteCompany)="onDeleteRequest($event)"
+/>
 
 <!-- BOITE DE DIALOGUE TO CONFIRM DELETE COMPANY -->
-    <!-- A COMPONENT TO CONFIRM DELETE -->
+<app-confirm-dialog
+  [open]="pendingDeleteId() !== null"
+  title="Supprimer l'entreprise"
+  [message]="confirmMessage()"
+  confirmLabel="Supprimer"
+  cancelLabel="Annuler"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+/>
     
