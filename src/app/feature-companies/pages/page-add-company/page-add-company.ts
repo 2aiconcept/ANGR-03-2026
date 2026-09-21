@@ -16,13 +16,13 @@ export default class PageAddCompany {
 
   protected readonly error = signal<string | null>(null);
 
-  /** Reçoit les données valides du formulaire, 
+  /** Reçoit les données valides du formulaire,
    * crée l'entreprise puis revient à la liste. */
   protected onSave(payload: CompanyPayload): void {
     this.error.set(null);
     this.companyService.create(payload).subscribe({
       next: () => this.router.navigate(['/list-companies']),
-      error: () => this.error.set("Impossible d'ajouter l'entreprise."),
+      error: () => this.error.set('Erreur lors de la creation'),
     });
   }
 }

@@ -1,5 +1,7 @@
 <table class="table table-striped align-middle">
-  <caption class="visually-hidden">Liste des entreprises</caption>
+  <caption class="visually-hidden">
+    Liste des entreprises
+  </caption>
   <thead>
     <tr>
       <th scope="col">Nom</th>
@@ -21,22 +23,21 @@
             <button
               type="button"
               class="btn btn-sm btn-outline-primary"
-              (click) = "editCompanyFn(company.id)"
+              (click)="editCompany.emit(company.id)"
             >
               Éditer
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
-              (click) = "deleteCompanyFn(company.id)"
+              (click)="deleteCompany.emit({ id: company.id, company: company.nom })"
             >
               Supprimer
             </button>
           </div>
         </td>
       </tr>
-    }
-    @empty {
+    } @empty {
       <tr>
         <td colspan="5" class="text-center text-muted">Aucune entreprise à afficher.</td>
       </tr>

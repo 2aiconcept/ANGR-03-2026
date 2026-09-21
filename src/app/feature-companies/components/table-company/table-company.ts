@@ -1,6 +1,9 @@
 import { Component, input, output } from '@angular/core';
 import { Company } from '../../models/company';
-
+export type deleteItemPayload = {
+  id: number;
+  company: string;
+};
 @Component({
   selector: 'app-table-company',
   imports: [],
@@ -12,17 +15,13 @@ export class TableCompany {
   readonly companies = input.required<Company[]>();
 
   /** Émis quand l'utilisateur veut éditer une entreprise (transporte l'id). */
-  readonly editCompany = output<number>()
+  readonly editCompany = output<number>();
 
   /** Émis quand l'utilisateur veut supprimer une entreprise (transporte l'id). */
-  readonly deleteCompany = output<number>()
+  // readonly deleteCompany = output<number>()
+  readonly deleteCompany = output<deleteItemPayload>();
 
-  protected editCompanyFn(id: number) {
-    this.editCompany.emit(id)
+  ngOnInit() {
+    console.log(this.companies());
   }
-
-  protected deleteCompanyFn(id: number) {
-    this.deleteCompany.emit(id)
-  }
-  
 }

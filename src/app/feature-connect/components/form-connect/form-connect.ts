@@ -16,7 +16,7 @@ const PASSWORD_MIN_LENGTH = 6;
 })
 export class FormConnect {
   // inject router
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
 
   // inject Auth
   private readonly auth = inject(Auth);
@@ -28,17 +28,22 @@ export class FormConnect {
   protected toggleMode(): void {
     this.mode.update((current) => (current === 'signin' ? 'signup' : 'signin'));
   }
-  
+
   /** Données saisies par l'utilisateur, pilotées par le signal form. */
-  private readonly model = signal<Credentials>({ email: '', password: '' });
+  model = signal<Credentials>({ email: '', password: '' });
+  effect() {
+    console.log(this.model());
+  }
 
   /** Signal form : valeur + validation déclarative. */
   protected readonly connectForm = form(this.model, (path) => {
-    required(path.email, {message : "Le format de l'email est obligatoire"});
-    email(path.email, {message: "Le format de l'adresse email est invalide"});
-    required(path.password, {message : "Le format de l'email est obligatoire"});
-    minLength(path.password, PASSWORD_MIN_LENGTH, {message : `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères`})
-  })
+    required(path.email, { message: "Le format de l'email est obligatoire" });
+    email(path.email, { message: "Le format de l'adresse email est invalide" });
+    required(path.password, { message: "Le format de l'email est obligatoire" });
+    minLength(path.password, PASSWORD_MIN_LENGTH, {
+      message: `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères`,
+    });
+  });
 
   /** Soumission : route vers signin ou signup selon le mode. */
   protected onSubmit(event: Event): void {
@@ -47,6 +52,7 @@ export class FormConnect {
       return;
     }
     const credentials = this.model();
+    console.log(this.model());
     if (this.mode() === 'signin') {
       this.signin(credentials);
     } else {

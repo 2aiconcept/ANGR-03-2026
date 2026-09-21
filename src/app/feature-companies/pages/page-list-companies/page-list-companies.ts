@@ -3,7 +3,10 @@ import { CompanyService } from '../../services/company';
 import { Router } from '@angular/router';
 import { TableCompany } from '../../components/table-company/table-company';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
-
+export type deleteItemPayload = {
+  id: number;
+  company: string;
+};
 @Component({
   selector: 'app-page-list-companies',
   imports: [TableCompany, ConfirmDialog],
@@ -11,79 +14,63 @@ import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm
   styleUrl: './page-list-companies.css',
 })
 export default class PageListCompanies implements OnInit {
-  // INJECT COMPANY SERVICE
+  /** Injecter companyService pour pouvoir appeler les methodes du service */
   private readonly companyService = inject(CompanyService);
 
-  // INJECT ROUTER
+  /** Injecter le router pour faire la redirection vers la route edit/_id. */
   private readonly router = inject(Router);
 
-  // SIGNAL FOR COMPANIES COLLECTION
+  /** Signal pour la liste des companies depuis le service. */
   protected readonly companies = this.companyService.companies;
-  // SIGNAL FOR API ERRORS
+
+  /** Signal pour récupérer l'error depuis le service. */
   protected readonly error = this.companyService.error;
 
-  // Id de l'entreprise dont la suppression est en attente de confirmation
-  // (null = aucune confirmation en cours, la modale est fermée).
-  protected readonly pendingDeleteId = signal<number | null>(null);
+  /** Signal qui récupère l'id et le nom de la company à supprimer depuis table-company component */
+  protected readonly pendingDeleteItem = signal<deleteItemPayload | null>(null);
 
-   // Entreprise correspondante, pour afficher son nom dans la confirmation.
-  private readonly pendingCompany = computed(() =>
-    this.companies().find((company) => company.id === this.pendingDeleteId()) ?? null,
-  );
-
+  /** Signal calculé automatiquement avec le nom de la companie qui return le message à envoyer à la boite de dialog */
   protected readonly confirmMessage = computed(() => {
-    const company = this.pendingCompany();
-    return company
-      ? `Voulez-vous vraiment supprimer « ${company.nom} » ? Cette action est irréversible.`
+    const item = this.pendingDeleteItem();
+    return item
+      ? `Voulez-vous vraiment supprimer « ${item.company} » ? Cette action est irréversible.`
       : '';
   });
 
   ngOnInit(): void {
+    /** charge la liste des companies à l'initialisation du component */
     this.companyService.load();
-    console.log(this.companies())
   }
 
-
-  // SIGNAL  COMPUTED TO PASS COMPANY NAME TO DIALOG BOX WITH PERSONNAL MESSAGE
-
-  // METHOD TO REDIRECT TO ADD
   /** Redirige vers le formulaire d'ajout d'une entreprise. */
   protected onAddCompany(): void {
     this.router.navigate(['/add-company']);
   }
 
-  editItem(id: number) {
-    this.router.navigate(['/edit-company', id])
+  /** Redirige vers le formulaire d'edition d'une entreprise avec id dans la route. */
+  protected editItem(id: number) {
+    this.router.navigate(['/edit-company', id]);
   }
 
-  /** Clic sur « Supprimer » : ouvre la confirmation (ne supprime pas encore). */
-  protected onDeleteRequest(id: number): void {
-    this.pendingDeleteId.set(id);
+  /** Récupère le nom et l'id de l'item à supprimer avant suppressions definitive */
+  protected onDeleteRequest(item: deleteItemPayload): void {
+    // console.log(item);
+    /**  */
+    this.pendingDeleteItem.set(item);
   }
 
   /** Confirmation : supprime réellement puis referme la modale. */
   protected confirmDelete(): void {
-    const id = this.pendingDeleteId();
-    if (id !== null) {
+    const item = this.pendingDeleteItem();
+    if (item !== null) {
+      const id = item.id;
       this.companyService.remove(id);
     }
-    this.pendingDeleteId.set(null);
+    this.pendingDeleteItem.set(null);
   }
 
   /** Annulation : referme la modale sans rien supprimer. */
   protected cancelDelete(): void {
-    this.pendingDeleteId.set(null);
+    this.pendingDeleteItem.set(null);
   }
-
-
-  // METHOD TO OPEN DIALOG BOX
-
-  // MMETHOD TO DELELE AFTER CONFIRM DELETE IN DIALOG BOX
-
-  // METHOD TO CANCEL A DELETE AFTER DIALOG BOX
-
-
-
-
-   
 }

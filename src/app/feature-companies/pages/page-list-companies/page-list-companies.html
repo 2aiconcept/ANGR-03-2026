@@ -1,5 +1,5 @@
 <!-- BOUTON ADD COMPANY -->
- <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h3 m-0">Entreprises</h1>
   <button type="button" class="btn btn-primary" (click)="onAddCompany()">
     Ajouter une entreprise
@@ -12,16 +12,16 @@
 }
 
 <!-- TABLE DE DISPLAY COMPANIES -->
-    <!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->*
-<app-table-company 
-    [companies]="companies()"
-    (editCompany)="editItem($event)"
-    (deleteCompany)="onDeleteRequest($event)"
+<!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->*
+<app-table-company
+  [companies]="companies()"
+  (editCompany)="editItem($event)"
+  (deleteCompany)="onDeleteRequest($event)"
 />
 
 <!-- BOITE DE DIALOGUE TO CONFIRM DELETE COMPANY -->
 <app-confirm-dialog
-  [open]="pendingDeleteId() !== null"
+  [open]="pendingDeleteItem() !== null"
   title="Supprimer l'entreprise"
   [message]="confirmMessage()"
   confirmLabel="Supprimer"
@@ -29,4 +29,3 @@
   (confirmed)="confirmDelete()"
   (cancelled)="cancelDelete()"
 />
-    
