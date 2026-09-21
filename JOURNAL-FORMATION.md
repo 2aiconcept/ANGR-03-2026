@@ -258,6 +258,73 @@ npm run build && npm test
 - Après le déplacement, vérifier les chemins non gérés par Nx : script `compodoc`
   (`tsconfig.doc.json`), `public/`, styles Bootstrap. Dès qu'il y a plusieurs projets, préférer
   `nx serve mini-crm` / `nx build mini-crm` dans les scripts npm.
+- Résultat du `--dry-run` sur `mini-crm` : `project.json`, `src/`, `public/`, `tsconfig.app/spec/doc.json`
+  passent dans `apps/mini-crm/` ; `tsconfig.json` racine devient `tsconfig.base.json` (qui recevra les
+  alias des libs) ; `package.json` mis à jour. Le script `compodoc` doit ensuite pointer vers
+  `apps/mini-crm/tsconfig.doc.json`.
+
+### 2026-09-21 — `nx import` : intégrer `mini-crm` dans le monorepo `mini-crm-nx`
+
+**Objectif** : importer le dépôt `mini-crm` (Angular 21, Nx standalone) dans le monorepo
+`mini-crm-nx` (Angular 22, `apps/shop`, `apps/api`, libs dans `packages/`), **avec son historique git**.
+
+**Notions** :
+- `nx import <source> <destination>` clone le dépôt source (URL ou chemin local), réécrit son
+  historique git pour le placer dans le dossier de destination, puis le fusionne (commit
+  `feat(repo): merge main from …`). `git log apps/mini-crm` montre les anciens commits.
+- Seul le **contenu commité** de la branche `--ref` est importé : il faut committer la source avant.
+- `nx import` **ne recopie pas** les dépendances racine et **ne corrige pas** les chemins :
+  c'est à faire à la main (Nx l'indique par les avertissements `missing_root_deps` et
+  `config_path_mismatch`).
+
+**Commande** (lancée depuis `mini-crm-nx`, dépôt propre) :
+```bash
+npx nx import ../mini-crm apps/mini-crm --ref=main --interactive=false --plugins=skip
+```
+
+**Corrections après l'import** :
+1. Supprimer les fichiers de workspace en double : `apps/mini-crm/nx.json`, `package.json`,
+   `package-lock.json` (un seul `nx.json`/`package.json` à la racine du monorepo).
+2. Dépendances : `npm install bootstrap@^5.3.8` à la racine (seule dépendance absente ; Angular,
+   RxJS, Vitest sont déjà fournis par le monorepo en version 22).
+3. `apps/mini-crm/project.json` : chemins relatifs à la **racine du workspace**
+   (`apps/mini-crm/src/main.ts`, `apps/mini-crm/tsconfig.app.json`, `apps/mini-crm/public`,
+   `fileReplacements`…), `sourceRoot: "apps/mini-crm/src"`, `outputPath: "dist/apps/mini-crm"`,
+   `$schema: "../../node_modules/…"`, `tags: ["scope:mini-crm"]` (pour les règles
+   `@nx/enforce-module-boundaries`), `tsConfig` explicite pour la cible `test`.
+4. `apps/mini-crm/tsconfig.json` : `"extends": "../../tsconfig.base.json"` pour hériter des alias
+   `@org/*` des libs partagées ; `outDir` → `../../dist/out-tsc`.
+
+**Vérifications** :
+- `npx nx show projects` → `mini-crm` apparaît à côté de `shop`, `api` et des libs.
+- `npx nx build mini-crm` → OK sous **Angular 22** (le code Angular 21 compile sans migration) ;
+  avertissement de budget initial (559 kB > 500 kB), déjà identifié dans la séance « bundles ».
+- `npx nx test mini-crm` → échec **déjà présent dans le dépôt d'origine** : 4 specs importent
+  `{ PageListCompanies }` (export nommé) alors que les pages sont en `export default` (pour
+  `loadComponent`). Correction : `import PageListCompanies from './page-list-companies';`.
+
+**Correction des tests** (commit `chore(mini-crm): wire imported app into the monorepo`) :
+- 4 specs de pages en `export default` → import par défaut. Attention : les autres pages
+  (contacts, orders, connect) sont en export nommé, ne modifier que celles qui échouent.
+- 3 specs générées n'avaient jamais été mises à jour après l'évolution des composants :
+  ```ts
+  // input.required() → fournir une valeur avant le premier rendu
+  fixture.componentRef.setInput('companies', []);   // TableCompany
+  fixture.componentRef.setInput('open', false);     // ConfirmDialog
+  // composant qui utilise routerLink → fournir le routeur
+  providers: [provideRouter([])],                   // Nav
+  ```
+  Erreurs associées : `NG0950` (input requis sans valeur) et `NG0201` (`ActivatedRoute` sans provider).
+- Résultat : `npx nx test mini-crm` → 22/22 ; `npx nx build mini-crm` → OK.
+- Ces correctifs sont dans `mini-crm-nx` uniquement ; le dépôt d'origine `mini-crm` garde les specs cassées.
+
+**Pièges** :
+- Lancer `nx import` sur un dépôt destination **propre** (sinon refus).
+- Mélange de versions : la source était en Angular 21 / TS 5.9, le monorepo en Angular 22 / TS 6 ;
+  ce sont les versions **racine** qui s'appliquent après l'import. Dans les autres cas, lancer
+  `nx migrate` sur la source avant l'import.
+- Le script `compodoc` et la cible `lint` n'ont pas été repris ; à recréer côté monorepo
+  (`apps/mini-crm/eslint.config.mjs` sur le modèle de `apps/shop`).
 
 ---
 
