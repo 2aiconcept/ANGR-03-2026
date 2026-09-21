@@ -111,6 +111,154 @@ optimiser le temps de chargement initial.
 - Un import statique d'une feature dans `app.routes.ts` ou `app.ts` la fait basculer dans le chunk initial : utiliser `loadComponent` / `loadChildren`.
 - Les grosses dépendances importées globalement (ex. dans `styles` ou `app.config.ts`) pèsent sur le démarrage.
 
+### 2026-09-21 — Migration vers Nx : feuille de route
+
+**Objectif** : faire passer le projet Angular CLI `mini-crm` sur Nx, puis vers un monorepo découpé en librairies.
+
+**Étapes prévues** :
+- **Phase 1 — Préparer** : committer le travail en cours (arbre git propre), créer une branche
+  `migration-nx`, vérifier la compatibilité Nx ↔ Angular ↔ Node (matrice sur nx.dev),
+  installer l'extension VS Code **Nx Console**.
+- **Phase 2 — Migrer le projet CLI** : `npx nx@latest init` (installe `nx`, `@nx/angular`,
+  `@nx/workspace`, crée `nx.json`, convertit `angular.json` en `project.json`, ajoute `.nx/cache`
+  au `.gitignore`, propose Nx Cloud). Vérifier ensuite `nx serve`, `nx build` (budgets, chunk
+  initial), `nx test` (executor Vitest), adapter le script Compodoc, puis lancer `nx graph`.
+- **Phase 3 — Monorepo** : app dans `apps/mini-crm` (ou nouveau workspace
+  `create-nx-workspace --preset=angular-monorepo`) ; découpage en libs `feature-*`, `ui`,
+  `data-access`, `util` ; `nx g @nx/angular:library`, `@nx/workspace:move` ; alias
+  `@mini-crm/...` dans `tsconfig.base.json` ; le lazy loading pointe vers les libs.
+- **Phase 4 — Gouvernance** : ESLint (`nx add @nx/eslint` + angular-eslint, absent du projet
+  au départ), tags dans `project.json` + règle `@nx/enforce-module-boundaries`,
+  `nx run-many` / `nx affected`, cache, CI.
+
+### 2026-09-21 — Incident : `nx init` échoue avec `npm ERESOLVE`
+
+**Symptôme** : `npx nx@latest init` (Nx 23.2.1) ajoute `nx`, `@nx/angular` et `@nx/workspace`
+dans `package.json`, puis l'installation npm échoue :
+```
+npm error ERESOLVE could not resolve
+Found: @angular/compiler@21.2.15
+Conflicting peer dependency: @angular/compiler@21.2.23
+  peer @angular/compiler@"21.2.23" from @angular/compiler-cli@21.2.23
+  ... peerOptional @angular-devkit/build-angular@">= 20.0.0 < 23.0.0" from @nx/angular@23.2.1
+```
+
+**Analyse (à expliquer aux stagiaires, c'est un grand classique)** :
+- Le `package-lock.json` fige les paquets Angular en **21.2.15**.
+- `@nx/angular` déclare `@angular-devkit/build-angular` en peer optionnelle. npm 7+ installe
+  les peers automatiquement et prend donc la dernière version (21.2.24), qui demande
+  `@angular/compiler-cli` en 21.x. npm résout alors vers la dernière, **21.2.23**.
+- Or `@angular/compiler-cli` exige **exactement la même version** de `@angular/compiler`
+  (peer figée `21.2.23`), alors que la version installée est 21.2.15, d'où le conflit.
+- Leçon : les paquets `@angular/*` sont publiés **en version alignée** (lockstep). Un
+  workspace dont les versions sont en retard entre en conflit dès qu'un outil tiers tire une
+  version plus récente.
+
+**Compatibilité Nx ↔ Angular** (peerDependencies de `@nx/angular` vérifiées sur npm) :
+
+| `@nx/angular` | Angular supporté |
+|---|---|
+| 22.2.x | 18 → 20 |
+| 22.3 → 23.0 | 19 → 21 |
+| 23.2.1 | 20 → 22 |
+
+Nx 23.2.1 est donc compatible Angular 21 : le conflit ne vient pas de Nx lui-même mais de la
+peer optionnelle `@angular-devkit/build-angular`. npm prend sa dernière version (21.2.24), qui
+dépend de `@angular/build` **21.2.24** en version exacte, alors que le projet a
+`@angular/build` 21.2.13.
+
+**Correctif retenu : rester sur les versions actuelles** en installant d'abord
+`build-angular` à la même version que `@angular/build` :
+```bash
+git checkout package.json                              # annule l'ajout partiel de nx init
+npm install -D @angular-devkit/build-angular@21.2.13   # même version que @angular/build
+npx nx@latest init                                     # ou npx nx@23.2.1 init pour figer
+```
+`build-angular@21.2.13` dépend de `@angular/build@21.2.13` et accepte
+`@angular/compiler-cli ^21.0.0`, donc plus de conflit.
+
+**Créer un workspace Nx neuf en Angular 21** : utiliser une version de Nx dont la plage
+Angular s'arrête à 21, par exemple `npx create-nx-workspace@23.0.2 mini-crm-nx --preset=angular-monorepo`
+(`create-nx-workspace@latest` pourrait générer une version d'Angular plus récente).
+
+**Correctif alternatif** (ne **pas** utiliser `--force` ou `--legacy-peer-deps`, qui masquent le
+problème et peuvent casser le build) :
+1. Annuler la modification partielle de `nx init` : `git checkout package.json`
+2. Aligner Angular sur la dernière version corrective 21.2.x :
+   `npx ng update @angular/core@21 @angular/cli@21` (ou `npm update`)
+3. Vérifier que `ng build` et `ng test` passent, puis committer.
+4. Relancer `npx nx@latest init`.
+
+### 2026-09-21 — Scripts npm après la migration vers Nx
+
+**Objectif** : adapter les scripts de `package.json` maintenant que `angular.json` est remplacé
+par `nx.json` + `project.json`.
+
+**Scripts ajoutés / modifiés** :
+```json
+"ng": "nx",
+"start": "nx serve",
+"start:prod": "nx serve --configuration production",
+"build": "nx build",
+"build:dev": "nx build --configuration development",
+"watch": "nx build --watch --configuration development",
+"test": "nx test",
+"test:watch": "nx test --watch",
+"format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
+"format:check": "prettier --check \"src/**/*.{ts,html,css,json}\"",
+"graph": "nx graph",
+"reset": "nx reset",
+"compodoc": "compodoc -p tsconfig.doc.json"
+```
+
+**Notions** :
+- Sans `angular.json`, la commande `ng` ne trouve plus le projet → le script `ng` pointe vers `nx`
+  (`npm run ng -- build` passe par Nx).
+- Les options `--configuration` correspondent aux `configurations` des cibles de `project.json`.
+- `nx graph` affiche le graphe des projets et des dépendances du workspace.
+- `nx reset` vide le cache local de Nx (`cache: true` sur `build` et `test` dans `nx.json`) : utile
+  quand un résultat mis en cache semble périmé.
+- Dans un script npm, `npx` est inutile : les binaires de `node_modules/.bin` sont déjà dans le PATH.
+- `format:check` sert en CI (échoue si un fichier n'est pas formaté) ; `format` corrige.
+
+**Vérifications** :
+- `npm run build:dev` → build OK (≈ 30 s, cache 0/1 au premier lancement).
+- `npm run format:check` → 21 fichiers non conformes à Prettier (pas encore corrigés).
+
+**À faire ensuite** :
+- Ajouter une cible `lint` (ESLint via `npx nx add @nx/eslint` ou `ng add angular-eslint`),
+  puis le script `"lint": "nx lint"`.
+- Lancer `npm run format` une fois, dans un commit dédié, pour aligner le code sur Prettier.
+
+### 2026-09-21 — Passer du layout « standalone » au layout monorepo (`apps/`)
+
+**Question** : la doc Nx indique que la migration « installe `nx`, `@nx/angular`, `@nx/workspace`
+et déplace les applications dans `apps/` ». Comment faire ?
+
+**Notions** :
+- Ce texte décrit `npx nx init --integrated`. Cette option ne fonctionne que sur un workspace
+  **Angular CLI** (avec `angular.json`). Ici, `nx init` a déjà été lancé sans l'option : le projet
+  est un workspace Nx **standalone** (`project.json` à la racine, `sourceRoot: "src"`), et les trois
+  paquets sont déjà installés.
+- Pour déplacer ensuite l'application dans `apps/`, on utilise le générateur
+  `@nx/workspace:convert-to-monorepo` : il déplace le projet dans `apps/mini-crm/` et met à jour
+  les chemins (`project.json`, `tsconfig*`, `outputPath`…).
+
+**Commandes** :
+```bash
+git add -A && git commit -m "chore: migrate to nx (standalone)"   # point de retour propre
+npx nx g @nx/workspace:convert-to-monorepo --dry-run              # prévisualiser
+npx nx g @nx/workspace:convert-to-monorepo                        # appliquer
+npx nx show projects                                              # vérifier
+npm run build && npm test
+```
+
+**Pièges** :
+- Toujours committer avant un générateur qui déplace des fichiers, pour pouvoir annuler (`git reset --hard`).
+- Après le déplacement, vérifier les chemins non gérés par Nx : script `compodoc`
+  (`tsconfig.doc.json`), `public/`, styles Bootstrap. Dès qu'il y a plusieurs projets, préférer
+  `nx serve mini-crm` / `nx build mini-crm` dans les scripts npm.
+
 ---
 
 ## Questions ouvertes / à approfondir
