@@ -1,3 +1,5 @@
+https://docs.google.com/document/d/186zVVBp9uXQxhXNNGinOpctj29D_zIVqcjaLYyudUng/edit?usp=sharing
+
 # MiniCrm
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
