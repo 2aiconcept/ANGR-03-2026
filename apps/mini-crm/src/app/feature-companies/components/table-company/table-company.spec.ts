@@ -12,6 +12,7 @@ describe('TableCompany', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TableCompany);
+    fixture.componentRef.setInput('companies', []);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
