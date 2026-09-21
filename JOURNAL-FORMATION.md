@@ -263,6 +263,38 @@ npm run build && npm test
   alias des libs) ; `package.json` mis à jour. Le script `compodoc` doit ensuite pointer vers
   `apps/mini-crm/tsconfig.doc.json`.
 
+### 2026-09-21 — Conversion de `mini-crm` en monorepo (réalisée)
+
+**Commande** (branche `chore/monorepo`, dépôt propre) :
+```bash
+npx nx g @nx/workspace:convert-to-monorepo
+```
+
+**Incident : le générateur ne déplace pas tout, sans erreur visible.** `src/app` et
+`src/environments` sont restés à la racine. Cause : sous Windows, le **démon Nx** (et parfois
+VS Code ou un `nx serve` lancé) garde des fichiers ouverts → `git mv` renvoyait `Permission denied`.
+```bash
+npx nx daemon --stop
+git mv src/app apps/mini-crm/src/app
+git mv src/environments apps/mini-crm/src/environments
+```
+Réflexe : **arrêter `nx serve` et le démon Nx avant un générateur qui déplace des fichiers**, puis
+vérifier avec `git status` que tout a bougé.
+
+**Corrections après conversion** :
+- `apps/mini-crm/project.json` : assets `"input": "apps/mini-crm/public"` (resté à `public`),
+  `outputPath: "dist/apps/mini-crm"`.
+- `package.json` : scripts nommant le projet (`nx serve mini-crm`, `nx build mini-crm`, `nx test mini-crm`…),
+  `compodoc -p apps/mini-crm/tsconfig.doc.json`, Prettier sur `{apps,libs}/**`.
+- `package.json` renommé `@mini-crm/source` par le générateur (préfixe des futurs alias `@mini-crm/...`).
+- Specs corrigées comme dans `mini-crm-nx` (default imports, `setInput`, `provideRouter([])`).
+
+**Vérifications** : `nx show projects` → `mini-crm` ; `nx build mini-crm` → OK
+(`dist/apps/mini-crm`) ; `nx test mini-crm` → 22/22.
+
+**Suite** : ajouter ESLint (`npx nx add @nx/eslint`), puis générer les libs dans `libs/`
+selon le plan « app shell + libs features ».
+
 ### 2026-09-21 — `nx import` : intégrer `mini-crm` dans le monorepo `mini-crm-nx`
 
 **Objectif** : importer le dépôt `mini-crm` (Angular 21, Nx standalone) dans le monorepo

@@ -1,27 +1,26 @@
 {
-  "$schema": "node_modules/nx/schemas/project-schema.json",
   "name": "mini-crm",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "generators": {},
-  "sourceRoot": "src",
+  "sourceRoot": "apps/mini-crm/src",
   "prefix": "app",
+  "generators": {},
   "targets": {
     "build": {
       "executor": "@angular/build:application",
+      "defaultConfiguration": "production",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "browser": "src/main.ts",
-        "tsConfig": "tsconfig.app.json",
+        "browser": "apps/mini-crm/src/main.ts",
+        "tsConfig": "apps/mini-crm/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "public"
+            "input": "apps/mini-crm/public"
           }
         ],
-        "styles": [
-          "src/styles.css",
-          "bootstrap/dist/css/bootstrap.min.css"
-        ],
-        "outputPath": "dist/mini-crm"
+        "styles": ["apps/mini-crm/src/styles.css", "bootstrap/dist/css/bootstrap.min.css"],
+        "outputPath": "dist/apps/mini-crm"
       },
       "configurations": {
         "production": {
@@ -40,8 +39,8 @@
           "outputHashing": "all",
           "fileReplacements": [
             {
-              "replace": "src/environments/environment.ts",
-              "with": "src/environments/environment.prod.ts"
+              "replace": "apps/mini-crm/src/environments/environment.ts",
+              "with": "apps/mini-crm/src/environments/environment.prod.ts"
             }
           ]
         },
@@ -50,14 +49,11 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production",
-      "outputs": [
-        "{options.outputPath}"
-      ]
+      }
     },
     "serve": {
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
         "production": {
           "buildTarget": "mini-crm:build:production"
@@ -65,8 +61,7 @@
         "development": {
           "buildTarget": "mini-crm:build:development"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "test": {
       "executor": "@angular/build:unit-test"
