@@ -2,7 +2,7 @@ import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthSession, Credentials, RegisterPayload } from '@mini-crm/shared/util';
+import { AuthSession, Credentials, RegisterPayload, User } from '@mini-crm/shared/util';
 import { API_URL } from '../tokens/api-url.token';
 
 const STORAGE_KEY = 'mini-crm.auth-session';
@@ -18,7 +18,7 @@ export class Auth {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   // signal pour le currentUser
-  readonly currentUser = signal<null>(null);
+  readonly currentUser = signal<User | null>(null);
 
   // signal pour le token
   readonly token = signal<string | null>(null);
@@ -32,6 +32,20 @@ export class Auth {
 
   readonly session = signal<AuthSession | null>(null);
 
+  constructor() {
+  if (!this.isBrowser) {
+    return;
+  }
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) {
+    return;
+  }
+  const session: AuthSession = JSON.parse(stored);
+  this.currentUser.set(session.user);
+  this.token.set(session.token);
+}
+
+
   signin(credentials: Credentials): void {
     this.error.set(null);
     this.http.post<AuthSession>(`${this.authUrl}/login`, credentials).subscribe({
@@ -42,6 +56,7 @@ export class Auth {
   }
 
   signup(payload: RegisterPayload): void {
+    console.log(payload);
     this.error.set(null);
     this.http.post<AuthSession>(`${this.authUrl}/register`, payload).subscribe({
       next: (session) => this.onAuthenticated(session),
@@ -72,14 +87,19 @@ export class Auth {
   }
 
   private save(session: AuthSession | null): void {
+    console.log(session);
     this.session.set(session);
     if (!this.isBrowser) {
       return;
     }
     if (session) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      this.currentUser.set(session.user);
+      this.token.set(session.token);
     } else {
       localStorage.removeItem(STORAGE_KEY);
+      this.currentUser.set(null);
+      this.token.set(null);
     }
   }
 }
