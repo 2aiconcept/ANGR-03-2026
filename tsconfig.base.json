@@ -6,6 +6,26 @@
     "target": "ES2022",
     "module": "preserve",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@mini-crm/companies/data-access": ["./libs/companies/data-access/src/index.ts"],
+      "@mini-crm/companies/feature": ["./libs/companies/feature/src/index.ts"],
+      "@mini-crm/companies/ui": ["./libs/companies/ui/src/index.ts"],
+      "@mini-crm/companies/util": ["./libs/companies/util/src/index.ts"],
+      "@mini-crm/connect/feature": ["./libs/connect/feature/src/index.ts"],
+      "@mini-crm/connect/ui": ["./libs/connect/ui/src/index.ts"],
+      "@mini-crm/contacts/data-access": ["./libs/contacts/data-access/src/index.ts"],
+      "@mini-crm/contacts/feature": ["./libs/contacts/feature/src/index.ts"],
+      "@mini-crm/contacts/ui": ["./libs/contacts/ui/src/index.ts"],
+      "@mini-crm/contacts/util": ["./libs/contacts/util/src/index.ts"],
+      "@mini-crm/not-found/feature": ["./libs/not-found/feature/src/index.ts"],
+      "@mini-crm/orders/data-access": ["./libs/orders/data-access/src/index.ts"],
+      "@mini-crm/orders/feature": ["./libs/orders/feature/src/index.ts"],
+      "@mini-crm/orders/ui": ["./libs/orders/ui/src/index.ts"],
+      "@mini-crm/orders/util": ["./libs/orders/util/src/index.ts"],
+      "@mini-crm/shared/data-access": ["./libs/shared/data-access/src/index.ts"],
+      "@mini-crm/shared/ui": ["./libs/shared/ui/src/index.ts"],
+      "@mini-crm/shared/util": ["./libs/shared/util/src/index.ts"]
+    }
   }
 }
