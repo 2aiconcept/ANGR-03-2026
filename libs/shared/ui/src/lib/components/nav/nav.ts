@@ -8,5 +8,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './nav.css',
 })
 export class Nav {
-  protected link1 = "/list-companies"
+  protected link1 = "/companies"
 }

@@ -72,7 +72,7 @@ export class Auth {
 
   private onAuthenticated(session: AuthSession): void {
     this.save(session);
-    this.router.navigate(['/list-companies']);
+    this.router.navigate(['/companies']);
   }
 
   private readStoredSession(): AuthSession | null {

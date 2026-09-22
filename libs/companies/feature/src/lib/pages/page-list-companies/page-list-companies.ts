@@ -44,12 +44,12 @@ export default class PageListCompanies implements OnInit {
 
   /** Redirige vers le formulaire d'ajout d'une entreprise. */
   protected onAddCompany(): void {
-    this.router.navigate(['/add-company']);
+    this.router.navigate(['/companies/add']);
   }
 
   /** Redirige vers le formulaire d'edition d'une entreprise avec id dans la route. */
   protected editItem(id: number) {
-    this.router.navigate(['/edit-company', id]);
+    this.router.navigate(['/companies/edit', id]);
   }
 
   /** Récupère le nom et l'id de l'item à supprimer avant suppressions definitive */

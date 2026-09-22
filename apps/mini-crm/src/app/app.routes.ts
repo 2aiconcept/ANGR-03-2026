@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@mini-crm/shared/data-access';
 
 export const routes: Routes = [
     {
@@ -7,19 +8,22 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
-        path: '',
+        path: 'connect',
         loadChildren: () => import('@mini-crm/connect/feature').then((m) => m.connectRoutes),
     },
     {
-        path: '',
+        path: 'companies',
+        canActivate: [authGuard],
         loadChildren: () => import('@mini-crm/companies/feature').then((m) => m.companiesRoutes),
     },
     {
-        path: '',
+        path: 'contacts',
+        canActivate: [authGuard],
         loadChildren: () => import('@mini-crm/contacts/feature').then((m) => m.contactsRoutes),
     },
     {
-        path: '',
+        path: 'orders',
+        canActivate: [authGuard],
         loadChildren: () => import('@mini-crm/orders/feature').then((m) => m.ordersRoutes),
     },
     {
@@ -27,5 +31,3 @@ export const routes: Routes = [
         loadComponent: () => import('@mini-crm/not-found/feature').then((m) => m.PageNotFound)
     },
 ];
-
-

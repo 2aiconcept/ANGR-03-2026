@@ -21,7 +21,7 @@ export default class PageAddCompany {
   protected onSave(payload: CompanyPayload): void {
     this.error.set(null);
     this.companyService.create(payload).subscribe({
-      next: () => this.router.navigate(['/list-companies']),
+      next: () => this.router.navigate(['/companies']),
       error: () => this.error.set('Erreur lors de la creation'),
     });
   }
