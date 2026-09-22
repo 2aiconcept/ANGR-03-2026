@@ -1,1 +1,2 @@
-export * from './lib/connect-feature/connect-feature';
+export * from './lib/pages/page-connect/page-connect';
+export * from './lib/connect.routes';

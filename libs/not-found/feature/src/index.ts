@@ -1,1 +1,1 @@
-export * from './lib/not-found-feature/not-found-feature';
+export { default as PageNotFound } from './lib/pages/page-not-found/page-not-found';

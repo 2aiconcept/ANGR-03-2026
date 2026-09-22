@@ -1,1 +1,1 @@
-export * from './lib/companies-util/companies-util';
+export * from './lib/models/company';

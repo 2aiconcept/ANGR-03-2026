@@ -1,1 +1,1 @@
-export * from './lib/orders-ui/orders-ui';
+export * from './lib/components/form-order/form-order';

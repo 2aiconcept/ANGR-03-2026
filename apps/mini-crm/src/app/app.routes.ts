@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { PageConnect } from './feature-connect/pages/page-connect/page-connect';
 
 export const routes: Routes = [
     {
@@ -8,24 +7,24 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
-        path: 'connect',
-        component: PageConnect,
+        path: '',
+        loadChildren: () => import('@mini-crm/connect/feature').then((m) => m.connectRoutes),
     },
     {
-        path: 'list-companies',
-        loadComponent: () => import('./feature-companies/pages/page-list-companies/page-list-companies'),
+        path: '',
+        loadChildren: () => import('@mini-crm/companies/feature').then((m) => m.companiesRoutes),
     },
     {
-        path: 'add-company',
-        loadComponent: () => import('./feature-companies/pages/page-add-company/page-add-company'),
+        path: '',
+        loadChildren: () => import('@mini-crm/contacts/feature').then((m) => m.contactsRoutes),
     },
     {
-        path: 'edit-company/:id',
-        loadComponent: () => import('./feature-companies/pages/page-edit-company/page-edit-company')
+        path: '',
+        loadChildren: () => import('@mini-crm/orders/feature').then((m) => m.ordersRoutes),
     },
     {
         path: '**',
-        loadComponent: () => import('./feature-not-found/pages/page-not-found/page-not-found')
+        loadComponent: () => import('@mini-crm/not-found/feature').then((m) => m.PageNotFound)
     },
 ];
 

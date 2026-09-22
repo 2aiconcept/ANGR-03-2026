@@ -1,1 +1,1 @@
-export * from './lib/connect-ui/connect-ui';
+export * from './lib/components/form-connect/form-connect';
