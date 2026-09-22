@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "apps/mini-crm/src",
   "prefix": "app",
+  "tags": ["scope:mini-crm", "type:app"],
   "generators": {},
   "targets": {
     "build": {
