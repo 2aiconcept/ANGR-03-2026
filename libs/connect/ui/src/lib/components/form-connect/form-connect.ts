@@ -1,9 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
-import { Auth } from '@mini-crm/shared/data-access';
-import { Router } from '@angular/router';
-
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { email, form, minLength, required, FormField } from '@angular/forms/signals';
-import { Credentials } from '@mini-crm/shared/util';
+import { Credentials, RegisterPayload } from '@mini-crm/shared/util';
 
 type ConnectMode = 'signin' | 'signup';
 const PASSWORD_MIN_LENGTH = 6;
@@ -13,13 +10,17 @@ const PASSWORD_MIN_LENGTH = 6;
   imports: [FormField],
   templateUrl: './form-connect.html',
   styleUrl: './form-connect.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormConnect {
-  // inject router
-  private readonly router = inject(Router);
+  /** Message d'erreur renvoyé par le parent (ex. identifiants incorrects), affiché sous le formulaire. */
+  readonly error = input<string | null>(null);
 
-  // inject Auth
-  private readonly auth = inject(Auth);
+  /** Émis avec les identifiants saisis quand l'utilisateur soumet en mode connexion. */
+  readonly signin = output<Credentials>();
+
+  /** Émis avec les données d'inscription saisies quand l'utilisateur soumet en mode inscription. */
+  readonly signup = output<RegisterPayload>();
 
   /** Mode courant : connexion (par défaut) ou inscription. */
   protected readonly mode = signal<ConnectMode>('signin');
@@ -30,42 +31,30 @@ export class FormConnect {
   }
 
   /** Données saisies par l'utilisateur, pilotées par le signal form. */
-  model = signal<Credentials>({ email: '', password: '' });
-  effect() {
-    console.log(this.model());
-  }
+  protected readonly model = signal<RegisterPayload>({ email: '', password: '', nom: '', prenom: '' });
 
-  /** Signal form : valeur + validation déclarative. */
+  /** Signal form : valeur + validation déclarative. Nom et prénom ne sont requis qu'à l'inscription. */
   protected readonly connectForm = form(this.model, (path) => {
-    required(path.email, { message: "Le format de l'email est obligatoire" });
+    required(path.email, { message: "L'email est obligatoire" });
     email(path.email, { message: "Le format de l'adresse email est invalide" });
-    required(path.password, { message: "Le format de l'email est obligatoire" });
+    required(path.password, { message: 'Le mot de passe est obligatoire' });
     minLength(path.password, PASSWORD_MIN_LENGTH, {
       message: `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères`,
     });
+    required(path.nom, { message: 'Le nom est obligatoire', when: () => this.mode() === 'signup' });
+    required(path.prenom, { message: 'Le prénom est obligatoire', when: () => this.mode() === 'signup' });
   });
 
-  /** Soumission : route vers signin ou signup selon le mode. */
+  /** Soumission : émet vers le parent, qui décide quoi faire (signin ou signup). */
   protected onSubmit(event: Event): void {
     event.preventDefault();
     if (this.connectForm().invalid()) {
       return;
     }
-    const credentials = this.model();
-    console.log(this.model());
     if (this.mode() === 'signin') {
-      this.signin(credentials);
+      this.signin.emit({ email: this.model().email, password: this.model().password });
     } else {
-      this.signup(credentials);
+      this.signup.emit(this.model());
     }
-  }
-
-  private signin(credentials: Credentials): void {
-    // Connexion simulée : le service met à jour l'état et redirige.
-    this.auth.signin(credentials);
-  }
-
-  private signup(credentials: Credentials): void {
-    // TODO: brancher le service d'authentification (inscription)
   }
 }

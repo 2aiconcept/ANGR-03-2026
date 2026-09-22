@@ -1,1 +1,1 @@
-<app-form-connect />
+<app-form-connect [error]="auth.error()" (signin)="auth.signin($event)" (signup)="auth.signup($event)" />

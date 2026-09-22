@@ -1,18 +1,21 @@
-import { Component, inject } from '@angular/core';
-import { Auth } from '@mini-crm/shared/data-access';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { User } from '@mini-crm/shared/util';
 
 @Component({
   selector: 'app-header',
   imports: [],
   templateUrl: './header.html',
   styleUrl: './header.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
+  /** Utilisateur à afficher, ou null si personne n'est connecté. */
+  readonly user = input<User | null>(null);
 
-  // propriete auth = inject du servce pour pouvoir utiliser auth.isAuthenticated du service dan le html
-  protected readonly auth = inject(Auth);
-  // protected logout() pour déconnexion via une methode du service
-  protected logout(): void {
-    this.auth.logout()
+  /** Émis quand l'utilisateur clique sur le bouton de déconnexion. */
+  readonly logout = output<void>();
+
+  protected onLogoutClick(): void {
+    this.logout.emit();
   }
 }

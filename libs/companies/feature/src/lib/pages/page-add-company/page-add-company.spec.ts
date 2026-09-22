@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { API_URL } from '@mini-crm/shared/data-access';
 
 import PageAddCompany from './page-add-company';
 
@@ -9,6 +10,7 @@ describe('PageAddCompany', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageAddCompany],
+      providers: [{ provide: API_URL, useValue: 'https://api.test' }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageAddCompany);

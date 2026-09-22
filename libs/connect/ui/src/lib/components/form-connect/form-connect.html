@@ -9,6 +9,48 @@
     </h2>
 
     <form class="d-flex flex-column gap-3" (submit)="onSubmit($event)">
+      @if (mode() === 'signup') {
+        <div>
+          <label for="prenom" class="form-label">Prénom</label>
+          <input
+            id="prenom"
+            type="text"
+            class="form-control"
+            autocomplete="given-name"
+            aria-describedby="prenom-errors"
+            [formField]="connectForm.prenom"
+            [attr.aria-invalid]="connectForm.prenom().touched() && connectForm.prenom().invalid()"
+          />
+          @if (connectForm.prenom().touched() && connectForm.prenom().invalid()) {
+            <div id="prenom-errors" class="text-danger small mt-1" aria-live="polite">
+              @for (error of connectForm.prenom().errors(); track error.kind) {
+                <div>{{ error.message }}</div>
+              }
+            </div>
+          }
+        </div>
+
+        <div>
+          <label for="nom" class="form-label">Nom</label>
+          <input
+            id="nom"
+            type="text"
+            class="form-control"
+            autocomplete="family-name"
+            aria-describedby="nom-errors"
+            [formField]="connectForm.nom"
+            [attr.aria-invalid]="connectForm.nom().touched() && connectForm.nom().invalid()"
+          />
+          @if (connectForm.nom().touched() && connectForm.nom().invalid()) {
+            <div id="nom-errors" class="text-danger small mt-1" aria-live="polite">
+              @for (error of connectForm.nom().errors(); track error.kind) {
+                <div>{{ error.message }}</div>
+              }
+            </div>
+          }
+        </div>
+      }
+
       <div>
         <label for="email" class="form-label">Adresse e-mail</label>
         <input
@@ -19,9 +61,7 @@
           aria-describedby="email-errors"
           [formField]="connectForm.email"
           [attr.aria-invalid]="connectForm.email().touched() && connectForm.email().invalid()"
-          aria-describedby="email-errors"
         />
-        <div>{{ this.model().email }}</div>
         @if (connectForm.email().touched() && connectForm.email().invalid()) {
           <div id="email-errors" class="text-danger small mt-1" aria-live="polite">
             @for (error of connectForm.email().errors(); track error.kind) {
@@ -35,12 +75,12 @@
         <label for="password" class="form-label">Mot de passe</label>
         <input
           id="password"
-          type="text"
+          type="password"
           class="form-control"
+          autocomplete="current-password"
           aria-describedby="password-errors"
           [formField]="connectForm.password"
           [attr.aria-invalid]="connectForm.password().touched() && connectForm.password().invalid()"
-          aria-describedby="password-errors"
         />
         @if (connectForm.password().touched() && connectForm.password().invalid()) {
           <div id="password-errors" class="text-danger small mt-1" aria-live="polite">
@@ -51,8 +91,16 @@
         }
       </div>
 
+      @if (error(); as message) {
+        <div class="alert alert-danger mb-0" role="alert">{{ message }}</div>
+      }
+
       <button type="submit" class="btn btn-primary" [disabled]="connectForm().invalid()">
-        se connecter
+        @if (mode() === 'signin') {
+          Se connecter
+        } @else {
+          Créer mon compte
+        }
       </button>
     </form>
 

@@ -1,48 +1,85 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { Credentials } from '@mini-crm/shared/util';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthSession, Credentials, RegisterPayload } from '@mini-crm/shared/util';
+import { API_URL } from '../tokens/api-url.token';
 
-// Clé sous laquelle l'email connecté est stocké dans le localStorage.
-const STORAGE_KEY = 'mini-crm.user-email';
+const STORAGE_KEY = 'mini-crm.auth-session';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
-
-  // État privé : email de l'utilisateur connecté, ou null si déconnecté.
-  // Initialisé depuis le localStorage pour survivre à un rechargement de page.
-  // Seul le service peut le modifier.
-  private readonly userEmail = signal<string | null>(localStorage.getItem(STORAGE_KEY));
-  // Exposition en lecture seule pour les composants (encapsulation).
-  readonly currentUser = this.userEmail.asReadonly();
-
+  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly authUrl = `${inject(API_URL)}/auth`;
+  // localStorage n'existe pas côté serveur (SSR) : on ne le touche que dans le navigateur.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
+  // signal pour le currentUser
+  readonly currentUser = signal<null>(null);
 
-  // État dérivé : connecté dès qu'un email est présent.
-  readonly isAuthenticated = computed(() => this.userEmail() !== null);
+  // signal pour le token
+  readonly token = signal<string | null>(null);
+
+  // computed signal qui renveirra true ou false selon user authentifié ou non
+  // isAuthentificated
+  readonly isAuthenticated = computed(() => this.token() !== null);
+
+  /** Message d'erreur renvoyé par l'API lors du dernier signin/signup, à afficher dans l'UI. */
+  readonly error = signal<string | null>(null);
+
+  readonly session = signal<AuthSession | null>(null);
 
   signin(credentials: Credentials): void {
-    console.log(credentials)
-    // appel http (sur l'avance)
-    // maj signal with user email from connect form
-    this.userEmail.set(credentials.email);
-    // email in localstore to keep connection if user refresh web page
-    localStorage.setItem(STORAGE_KEY, credentials.email);
-    // redirection vers une route
-    this.router.navigate(['/list-companies'])
-
+    this.error.set(null);
+    this.http.post<AuthSession>(`${this.authUrl}/login`, credentials).subscribe({
+      next: (session) => this.onAuthenticated(session),
+      error: (response: HttpErrorResponse) =>
+        this.error.set(response.error?.error ?? 'Connexion impossible'),
+    });
   }
 
-  signup() {
-    // aller sur signup
+  signup(payload: RegisterPayload): void {
+    this.error.set(null);
+    this.http.post<AuthSession>(`${this.authUrl}/register`, payload).subscribe({
+      next: (session) => this.onAuthenticated(session),
+      error: (response: HttpErrorResponse) =>
+        this.error.set(response.error?.error ?? 'Inscription impossible'),
+    });
   }
 
-  /** Déconnecte l'utilisateur et redirige vers la page de connexion. */
   logout(): void {
-    this.userEmail.set(null);
-    localStorage.removeItem(STORAGE_KEY);
+    this.save(null);
     this.router.navigate(['/connect']);
+  }
+
+  private onAuthenticated(session: AuthSession): void {
+    this.save(session);
+    this.router.navigate(['/list-companies']);
+  }
+
+  private readStoredSession(): AuthSession | null {
+    if (!this.isBrowser) {
+      return null;
+    }
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      return null;
+    }
+    return JSON.parse(stored);
+  }
+
+  private save(session: AuthSession | null): void {
+    this.session.set(session);
+    if (!this.isBrowser) {
+      return;
+    }
+    if (session) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   }
 }
