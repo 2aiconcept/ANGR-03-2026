@@ -4,8 +4,7 @@ import { companiesResolver } from '@mini-crm/companies/data-access';
 export const companiesRoutes: Routes = [
   {
     path: '',
-    resolve: [companiesResolver],
-
+    resolve: { companies: companiesResolver },
     loadComponent: () => import('./pages/page-list-companies/page-list-companies'),
   },
   {

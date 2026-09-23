@@ -1,5 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CompanyService } from '@mini-crm/companies/data-access';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { CompaniesStore } from '@mini-crm/companies/data-access';
 import { Router } from '@angular/router';
 import { TableCompany } from '@mini-crm/companies/ui';
 import { ConfirmDialog } from '@mini-crm/shared/ui';
@@ -8,26 +8,24 @@ export type deleteItemPayload = {
   company: string;
 };
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-page-list-companies',
   imports: [TableCompany, ConfirmDialog],
   templateUrl: './page-list-companies.html',
   styleUrl: './page-list-companies.css',
 })
 export default class PageListCompanies {
-  constructor() {
-    console.log('collection :', this.companies());
-  }
-  /** Injecter companyService pour pouvoir appeler les methodes du service */
-  private readonly companyService = inject(CompanyService);
+  /** Le store des entreprises (déjà rempli par le resolver avant l'affichage de la page). */
+  private readonly store = inject(CompaniesStore);
 
   /** Injecter le router pour faire la redirection vers la route edit/_id. */
   private readonly router = inject(Router);
 
-  /** Signal pour la liste des companies depuis le service. */
-  protected readonly companies = this.companyService.companies;
+  /** Signal pour la liste des companies depuis le store. */
+  protected readonly companies = this.store.entities;
 
-  /** Signal pour récupérer l'error depuis le service. */
-  protected readonly error = this.companyService.error;
+  /** Signal pour récupérer l'error depuis le store. */
+  protected readonly error = this.store.error;
 
   /** Signal qui récupère l'id et le nom de la company à supprimer depuis table-company component */
   protected readonly pendingDeleteItem = signal<deleteItemPayload | null>(null);
@@ -52,8 +50,6 @@ export default class PageListCompanies {
 
   /** Récupère le nom et l'id de l'item à supprimer avant suppressions definitive */
   protected onDeleteRequest(item: deleteItemPayload): void {
-    // console.log(item);
-    /**  */
     this.pendingDeleteItem.set(item);
   }
 
@@ -61,8 +57,7 @@ export default class PageListCompanies {
   protected confirmDelete(): void {
     const item = this.pendingDeleteItem();
     if (item !== null) {
-      const id = item.id;
-      this.companyService.remove(id);
+      this.store.remove(item.id);
     }
     this.pendingDeleteItem.set(null);
   }

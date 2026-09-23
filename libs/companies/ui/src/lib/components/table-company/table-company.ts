@@ -1,10 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Company } from '@mini-crm/companies/util';
 export type deleteItemPayload = {
   id: number;
   company: string;
 };
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-table-company',
   imports: [],
   templateUrl: './table-company.html',

@@ -1,9 +1,10 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Nav, Header } from '@mini-crm/shared/ui';
 import { Auth } from '@mini-crm/shared/data-access';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-root',
   imports: [RouterOutlet, Nav, Header],
   templateUrl: './app.html',

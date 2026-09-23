@@ -1,8 +1,9 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { CompanyPayload } from '@mini-crm/companies/util';
 import { form, FormField, minLength, required } from '@angular/forms/signals';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-form-company',
   imports: [FormField],
   templateUrl: './form-company.html',

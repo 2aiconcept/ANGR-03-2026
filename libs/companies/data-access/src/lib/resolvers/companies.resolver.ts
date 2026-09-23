@@ -1,16 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { Company } from '@mini-crm/companies/util';
-import { CompanyService } from '../services/company';
+import { CompaniesStore } from '../store/companies.store';
 
-// export const companiesResolver: ResolveFn<Company[]> = () => inject(CompanyService).load();
-
-// export const companiesResolver: ResolveFn<Company[]> = () => {
-//   // const companyService = inject(CompanyService);
-//   // companyService.load();
-//   // return companyService.companies();
-//   return inject(CompanyService).load()
-// };
-
-
-export const companiesResolver: ResolveFn<Company[]> = () =>  inject(CompanyService).load();
+/** Remplit le store avant d'afficher la liste : le routeur attend la fin de load(). */
+export const companiesResolver: ResolveFn<void> = () => inject(CompaniesStore).load();
