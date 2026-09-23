@@ -15,6 +15,8 @@ export default defineConfig(() => ({
   test: {
     name: 'companies-util',
     watch: false,
+    // Lib de modèles (interfaces) : rien à tester, ce n'est pas une erreur.
+    passWithNoTests: true,
     globals: true,
     environment: 'jsdom',
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
