@@ -7,3 +7,4 @@ import { Component } from '@angular/core';
   styleUrl: './page-edit-company.css',
 })
 export default class PageEditCompany {}
+

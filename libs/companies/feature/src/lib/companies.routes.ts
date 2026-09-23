@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
+import { companiesResolver } from '@mini-crm/companies/data-access';
 
 export const companiesRoutes: Routes = [
   {
     path: '',
+    resolve: [companiesResolver],
+
     loadComponent: () => import('./pages/page-list-companies/page-list-companies'),
   },
   {

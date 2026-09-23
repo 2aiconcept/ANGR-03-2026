@@ -2,13 +2,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Company, CompanyPayload } from '@mini-crm/companies/util';
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '@mini-crm/shared/data-access';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CompanyService {
-
   // inject HttpClient from angular
   private readonly http = inject(HttpClient);
 
@@ -24,20 +23,22 @@ export class CompanyService {
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
 
-
-  /** Charge la liste des entreprises depuis l'API et alimente le signal. */
-  load(): void {
-    // remmetre à null le signal errorSignal
+  /** Charge la liste des entreprises depuis l'API et alimente le signal. Renvoie l'Observable pour le resolver. */
+  load(): Observable<Company[]> {
     this.errorSignal.set(null);
-    // call api
-    this.http.get<Company[]>(this.companiesUrl).subscribe({
-      next : (companies) => this.companiesSignal.set(companies),
-      error: () => this.errorSignal.set("Impossible de charger les entreprises")
-    })
+    return this.http.get<Company[]>(this.companiesUrl).pipe(
+      tap((companies) => this.companiesSignal.set(companies)),
+    );
   }
 
-  // function to get one company with id using HttpClient
+  // load(): void {
+  //   this.http.get<Company[]>(this.companiesUrl).subscribe({
+  //     next: (companies) => this.companiesSignal.set(companies),
+  //     error: () => this.errorSignal.set('Impossible de charger les entreprises'),
+  //   });
+  // }
 
+  // function to get one company with id using HttpClient
   // function to add company using HttpClient
   /** Crée une entreprise. */
   create(payload: CompanyPayload): Observable<Company> {
@@ -49,7 +50,8 @@ export class CompanyService {
   remove(id: number): void {
     this.errorSignal.set(null);
     this.http.delete<void>(`${this.companiesUrl}/${id}`).subscribe({
-      next: () => this.companiesSignal.update((list) => list.filter((company) => company.id !== id)),
+      next: () =>
+        this.companiesSignal.update((list) => list.filter((company) => company.id !== id)),
       error: () => this.errorSignal.set("Impossible de supprimer l'entreprise."),
     });
   }

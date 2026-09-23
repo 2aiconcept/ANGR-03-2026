@@ -13,7 +13,10 @@ export type deleteItemPayload = {
   templateUrl: './page-list-companies.html',
   styleUrl: './page-list-companies.css',
 })
-export default class PageListCompanies implements OnInit {
+export default class PageListCompanies {
+  constructor() {
+    console.log('collection :', this.companies());
+  }
   /** Injecter companyService pour pouvoir appeler les methodes du service */
   private readonly companyService = inject(CompanyService);
 
@@ -36,11 +39,6 @@ export default class PageListCompanies implements OnInit {
       ? `Voulez-vous vraiment supprimer « ${item.company} » ? Cette action est irréversible.`
       : '';
   });
-
-  ngOnInit(): void {
-    /** charge la liste des companies à l'initialisation du component */
-    this.companyService.load();
-  }
 
   /** Redirige vers le formulaire d'ajout d'une entreprise. */
   protected onAddCompany(): void {

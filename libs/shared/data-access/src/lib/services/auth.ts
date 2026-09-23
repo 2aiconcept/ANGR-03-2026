@@ -87,7 +87,7 @@ export class Auth {
   }
 
   private save(session: AuthSession | null): void {
-    console.log(session);
+    // console.log(session);
     this.session.set(session);
     if (!this.isBrowser) {
       return;
