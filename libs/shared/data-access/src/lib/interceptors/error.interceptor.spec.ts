@@ -37,17 +37,17 @@ describe('errorInterceptor', () => {
     return receivedError;
   }
 
-  it('401 : déconnecte l\'utilisateur', () => {
+  it('401 (pas de token) : déconnecte l\'utilisateur', () => {
     respondWith(401);
 
     expect(auth.logout).toHaveBeenCalled();
   });
 
-  it('403 : renvoie vers /companies sans déconnecter', () => {
+  it('403 (token invalide ou expiré, pour notre API) : déconnecte l\'utilisateur', () => {
     respondWith(403);
 
-    expect(router.navigate).toHaveBeenCalledWith(['/companies']);
-    expect(auth.logout).not.toHaveBeenCalled();
+    expect(auth.logout).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('404 : renvoie vers /not-found', () => {

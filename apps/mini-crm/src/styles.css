@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+/* Styles globaux, chargés APRÈS Bootstrap (voir project.json) pour pouvoir le surcharger. */
+
+/*
+ * Contraste WCAG AA (4.5:1 minimum pour le texte) :
+ * le bleu Bootstrap par défaut (#0d6efd) n'atteint que 4.26:1 avec le gris clair #f8f9fa
+ * (texte des boutons du header, liens de la nav). On utilise un bleu un peu plus foncé.
+ */
+:root {
+  --bs-primary: #0a58ca;
+  --bs-primary-rgb: 10, 88, 202;
+  --bs-link-color: #0a58ca;
+  --bs-link-color-rgb: 10, 88, 202;
+}

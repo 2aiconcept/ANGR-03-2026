@@ -1,11 +1,12 @@
+<!-- ariaCurrentWhenActive : ajoute aria-current="page" au lien actif, pour les lecteurs d'écran -->
 <ul class="nav flex-column p-2">
   <li class="nav-item">
-    <a class="nav-link" [routerLink]="link1" routerLinkActive="active">{{ 'nav.companies' | transloco }}</a>
+    <a class="nav-link" [routerLink]="link1" routerLinkActive="active" ariaCurrentWhenActive="page">{{ 'nav.companies' | transloco }}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" routerLink="/contacts" routerLinkActive="active">{{ 'nav.contacts' | transloco }}</a>
+    <a class="nav-link" routerLink="/contacts" routerLinkActive="active" ariaCurrentWhenActive="page">{{ 'nav.contacts' | transloco }}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" routerLink="/orders" routerLinkActive="active">{{ 'nav.orders' | transloco }}</a>
+    <a class="nav-link" routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">{{ 'nav.orders' | transloco }}</a>
   </li>
 </ul>

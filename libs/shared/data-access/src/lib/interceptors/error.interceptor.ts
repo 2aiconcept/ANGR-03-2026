@@ -4,20 +4,17 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { Auth } from '../services/auth';
 
-// Réponses ENTRANTES : si l'API répond 401 (token absent ou expiré), on déconnecte.
+// Réponses ENTRANTES : réagit aux erreurs HTTP globales, quel que soit l'écran.
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth);
   const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      // 401 : token absent ou expiré → logout() vide le token et redirige vers /connect.
-      if (error.status === 401) {
+      // Notre API répond 401 quand il n'y a pas de token, et 403 quand il est invalide ou expiré.
+      // Dans les deux cas, la session n'est plus valable → logout() vide le token et redirige vers /connect.
+      if (error.status === 401 || error.status === 403) {
         auth.logout();
-      }
-      // 403 : connecté mais pas les droits → retour à la liste, sans déconnecter.
-      if (error.status === 403) {
-        router.navigate(['/companies']);
       }
       // 404 : la ressource demandée n'existe pas → page not-found.
       if (error.status === 404) {

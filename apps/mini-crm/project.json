@@ -20,7 +20,7 @@
             "input": "apps/mini-crm/public"
           }
         ],
-        "styles": ["apps/mini-crm/src/styles.css", "bootstrap/dist/css/bootstrap.min.css"],
+        "styles": ["bootstrap/dist/css/bootstrap.min.css", "apps/mini-crm/src/styles.css"],
         "outputPath": "dist/apps/mini-crm"
       },
       "configurations": {
