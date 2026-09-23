@@ -1,0 +1,67 @@
+{
+  "header": {
+    "title": "Mini CRM",
+    "logout": "Log out",
+    "language": "Language"
+  },
+  "nav": {
+    "companies": "Companies",
+    "contacts": "Contacts",
+    "orders": "Orders"
+  },
+  "confirmDialog": {
+    "title": "Confirmation",
+    "message": "Are you sure?",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "companies": {
+    "list": {
+      "title": "Companies",
+      "add": "Add a company"
+    },
+    "add": {
+      "title": "Add a company",
+      "submit": "Add"
+    },
+    "edit": {
+      "title": "Edit a company",
+      "submit": "Save"
+    },
+    "delete": {
+      "title": "Delete the company",
+      "message": "Do you really want to delete “{{ name }}”? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "fields": {
+      "nom": "Name",
+      "secteur": "Industry",
+      "adresse": "Address",
+      "telephone": "Phone"
+    },
+    "table": {
+      "caption": "List of companies",
+      "action": "Action",
+      "edit": "Edit",
+      "delete": "Delete",
+      "empty": "No companies to display."
+    },
+    "form": {
+      "submit": "Save",
+      "errors": {
+        "nomRequired": "Name is required.",
+        "secteurRequired": "Industry is required.",
+        "adresseRequired": "Address is required.",
+        "telephoneRequired": "Phone is required."
+      }
+    },
+    "errors": {
+      "load": "Unable to load the companies.",
+      "loadOne": "Unable to load the company.",
+      "add": "Unable to create the company.",
+      "update": "Unable to update the company.",
+      "remove": "Unable to delete the company."
+    }
+  }
+}

@@ -52,7 +52,7 @@ export class CompanyService {
     this.http.delete<void>(`${this.companiesUrl}/${id}`).subscribe({
       next: () =>
         this.companiesSignal.update((list) => list.filter((company) => company.id !== id)),
-      error: () => this.errorSignal.set("Impossible de supprimer l'entreprise."),
+      error: () => this.errorSignal.set('companies.errors.remove'),
     });
   }
 

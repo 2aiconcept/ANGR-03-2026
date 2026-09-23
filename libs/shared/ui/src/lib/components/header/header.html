@@ -1,12 +1,26 @@
 <div class="bg-primary d-flex align-items-center justify-content-between text-white px-3 py-3 h-100">
-  <h1 class="h4 m-0">Mini CRM</h1>
+  <h1 class="h4 m-0">{{ 'header.title' | transloco }}</h1>
 
-  @if (user(); as currentUser) {
-    <div class="d-flex align-items-center gap-3">
+  <div class="d-flex align-items-center gap-3">
+    <div class="btn-group" role="group" [attr.aria-label]="'header.language' | transloco">
+      @for (lang of langs; track lang) {
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-light"
+          [class.active]="activeLang() === lang"
+          [attr.aria-pressed]="activeLang() === lang"
+          (click)="changeLang(lang)"
+        >
+          {{ lang | uppercase }}
+        </button>
+      }
+    </div>
+
+    @if (user(); as currentUser) {
       <span>{{ currentUser.prenom }} {{ currentUser.nom }}</span>
       <button type="button" class="btn btn-outline-light" (click)="onLogoutClick()">
-        Déconnexion
+        {{ 'header.logout' | transloco }}
       </button>
-    </div>
-  }
+    }
+  </div>
 </div>

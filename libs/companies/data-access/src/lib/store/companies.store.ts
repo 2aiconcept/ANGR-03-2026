@@ -14,6 +14,7 @@ import { Company, CompanyPayload } from '@mini-crm/companies/util';
 
 type CompaniesState = {
   isLoading: boolean;
+  // Clé de traduction du message d'erreur (ex. 'companies.errors.load'), traduite dans les templates.
   error: string | null;
 };
 
@@ -34,7 +35,7 @@ export const CompaniesStore = signalStore(
         const companies = await firstValueFrom(http.get<Company[]>(apiUrl));
         patchState(store, setAllEntities(companies), { isLoading: false });
       } catch {
-        patchState(store, { error: 'Impossible de charger les entreprises.', isLoading: false });
+        patchState(store, { error: 'companies.errors.load', isLoading: false });
       }
     },
     async loadOne(id: number): Promise<Company | null> {
@@ -44,7 +45,7 @@ export const CompaniesStore = signalStore(
         patchState(store, { isLoading: false });
         return company;
       } catch {
-        patchState(store, { error: "Impossible de charger l'entreprise.", isLoading: false });
+        patchState(store, { error: 'companies.errors.loadOne', isLoading: false });
         return null;
       }
     },
@@ -54,7 +55,7 @@ export const CompaniesStore = signalStore(
         const updated = await firstValueFrom(http.put<Company>(`${apiUrl}/${id}`, payload));
         patchState(store, updateEntity({ id, changes: updated }), { isLoading: false });
       } catch {
-        patchState(store, { error: "Impossible de modifier l'entreprise.", isLoading: false });
+        patchState(store, { error: 'companies.errors.update', isLoading: false });
       }
     },
     async add(payload: CompanyPayload): Promise<void> {
@@ -63,7 +64,7 @@ export const CompaniesStore = signalStore(
         const created = await firstValueFrom(http.post<Company>(apiUrl, payload));
         patchState(store, addEntity(created), { isLoading: false });
       } catch {
-        patchState(store, { error: "Impossible de créer l'entreprise.", isLoading: false });
+        patchState(store, { error: 'companies.errors.add', isLoading: false });
       }
     },
     async remove(id: number): Promise<void> {
@@ -72,7 +73,7 @@ export const CompaniesStore = signalStore(
         await firstValueFrom(http.delete<void>(`${apiUrl}/${id}`));
         patchState(store, removeEntity(id));
       } catch {
-        patchState(store, { error: "Impossible de supprimer l'entreprise." });
+        patchState(store, { error: 'companies.errors.remove' });
       }
     },
   })),

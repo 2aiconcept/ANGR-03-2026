@@ -1,18 +1,18 @@
 <!-- BOUTON ADD COMPANY -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 m-0">Entreprises</h1>
+  <h1 class="h3 m-0">{{ 'companies.list.title' | transloco }}</h1>
   <button type="button" class="btn btn-primary" (click)="onAddCompany()">
-    Ajouter une entreprise
+    {{ 'companies.list.add' | transloco }}
   </button>
 </div>
 
-<!-- IF ERRORS DISPLAY ERRORS -->
+<!-- IF ERRORS DISPLAY ERRORS (error() contient une clé de traduction) -->
 @if (error()) {
-  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  <div class="alert alert-danger" role="alert">{{ error() | transloco }}</div>
 }
 
 <!-- TABLE DE DISPLAY COMPANIES -->
-<!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->*
+<!-- A COMPONENT WITH ACTIONS DELETE AND UPDATE COMPANIES -->
 <app-table-company
   [companies]="companies()"
   (editCompany)="editItem($event)"
@@ -20,12 +20,13 @@
 />
 
 <!-- BOITE DE DIALOGUE TO CONFIRM DELETE COMPANY -->
+<!-- le message reçoit le nom de l'entreprise en paramètre : {{ name }} dans les fichiers json -->
 <app-confirm-dialog
   [open]="pendingDeleteItem() !== null"
-  title="Supprimer l'entreprise"
-  [message]="confirmMessage()"
-  confirmLabel="Supprimer"
-  cancelLabel="Annuler"
+  title="companies.delete.title"
+  [message]="'companies.delete.message' | transloco: { name: pendingDeleteItem()?.company }"
+  confirmLabel="companies.delete.confirm"
+  cancelLabel="companies.delete.cancel"
   (confirmed)="confirmDelete()"
   (cancelled)="cancelDelete()"
 />

@@ -1,4 +1,5 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideTransloco } from '@jsverse/transloco';
 import {
   PreloadAllModules,
   provideRouter,
@@ -10,6 +11,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { API_URL, errorInterceptor, tokenInterceptor } from '@mini-crm/shared/data-access';
 import { environment } from '../environments/environment';
+import { TranslocoHttpLoader } from './transloco-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +20,15 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
     provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
     { provide: API_URL, useValue: environment.apiBaseUrl },
+    provideTransloco({
+      config: {
+        availableLangs: ['fr', 'en'],
+        defaultLang: 'fr',
+        // Réaffiche les textes dès qu'on change de langue.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
   ]
 };

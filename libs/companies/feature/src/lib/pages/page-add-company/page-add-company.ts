@@ -3,11 +3,12 @@ import { CompaniesStore } from '@mini-crm/companies/data-access';
 import { Router } from '@angular/router';
 import { CompanyPayload } from '@mini-crm/companies/util';
 import { FormCompany } from '@mini-crm/companies/ui';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-page-add-company',
-  imports: [FormCompany],
+  imports: [FormCompany, TranslocoPipe],
   templateUrl: './page-add-company.html',
   styleUrl: './page-add-company.css',
 })

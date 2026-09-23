@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { API_URL } from '@mini-crm/shared/data-access';
 
 import PageListCompanies from './page-list-companies';
@@ -9,7 +10,7 @@ describe('PageListCompanies', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageListCompanies],
+      imports: [PageListCompanies, TranslocoTestingModule.forRoot({ langs: {} })],
       providers: [{ provide: API_URL, useValue: 'https://api.test' }],
     }).compileComponents();
 

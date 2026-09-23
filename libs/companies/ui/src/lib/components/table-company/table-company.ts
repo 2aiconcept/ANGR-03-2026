@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Company } from '@mini-crm/companies/util';
 export type deleteItemPayload = {
   id: number;
@@ -7,7 +8,7 @@ export type deleteItemPayload = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-table-company',
-  imports: [],
+  imports: [TranslocoPipe],
   templateUrl: './table-company.html',
   styleUrl: './table-company.css',
 })

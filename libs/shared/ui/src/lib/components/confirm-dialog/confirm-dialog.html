@@ -5,15 +5,15 @@
   aria-describedby="confirm-dialog-message"
   (cancel)="cancelled.emit()"
 >
-  <h2 id="confirm-dialog-title" class="h5">{{ title() }}</h2>
-  <p id="confirm-dialog-message" class="mb-4">{{ message() }}</p>
+  <h2 id="confirm-dialog-title" class="h5">{{ title() | transloco }}</h2>
+  <p id="confirm-dialog-message" class="mb-4">{{ message() || ('confirmDialog.message' | transloco) }}</p>
 
   <div class="d-flex justify-content-end gap-2">
     <button type="button" class="btn btn-secondary" (click)="cancelled.emit()">
-      {{ cancelLabel() }}
+      {{ cancelLabel() | transloco }}
     </button>
     <button type="button" class="btn btn-danger" (click)="confirmed.emit()">
-      {{ confirmLabel() }}
+      {{ confirmLabel() | transloco }}
     </button>
   </div>
 </dialog>

@@ -1,11 +1,11 @@
-<h1 class="h3 mb-3">Modifier une entreprise</h1>
+<h1 class="h3 mb-3">{{ 'companies.edit.title' | transloco }}</h1>
 
-<!-- if signal error pour afficher un message d'erreur (celui de l'api) -->
+<!-- if signal error pour afficher un message d'erreur (error() contient une clé de traduction) -->
 @if (error()) {
-  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  <div class="alert alert-danger" role="alert">{{ error() | transloco }}</div>
 }
 
 <!-- le formulaire n'est affiché qu'une fois l'entreprise chargée, pour être pré-rempli -->
 @if (company(); as company) {
-  <app-form-company [initialValue]="company" submitLabel="Enregistrer" (save)="onSave($event)" />
+  <app-form-company [initialValue]="company" submitLabel="companies.edit.submit" (save)="onSave($event)" />
 }

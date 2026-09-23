@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { ConfirmDialog } from './confirm-dialog';
 
@@ -8,7 +9,7 @@ describe('ConfirmDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmDialog],
+      imports: [ConfirmDialog, TranslocoTestingModule.forRoot({ langs: {} })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmDialog);

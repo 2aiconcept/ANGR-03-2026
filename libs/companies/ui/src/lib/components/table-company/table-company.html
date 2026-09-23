@@ -1,14 +1,14 @@
 <table class="table table-striped align-middle">
   <caption class="visually-hidden">
-    Liste des entreprises
+    {{ 'companies.table.caption' | transloco }}
   </caption>
   <thead>
     <tr>
-      <th scope="col">Nom</th>
-      <th scope="col">Secteur</th>
-      <th scope="col">Adresse</th>
-      <th scope="col">Téléphone</th>
-      <th scope="col" class="text-end">Action</th>
+      <th scope="col">{{ 'companies.fields.nom' | transloco }}</th>
+      <th scope="col">{{ 'companies.fields.secteur' | transloco }}</th>
+      <th scope="col">{{ 'companies.fields.adresse' | transloco }}</th>
+      <th scope="col">{{ 'companies.fields.telephone' | transloco }}</th>
+      <th scope="col" class="text-end">{{ 'companies.table.action' | transloco }}</th>
     </tr>
   </thead>
   <tbody>
@@ -25,21 +25,21 @@
               class="btn btn-sm btn-outline-primary"
               (click)="editCompany.emit(company.id)"
             >
-              Éditer
+              {{ 'companies.table.edit' | transloco }}
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
               (click)="deleteCompany.emit({ id: company.id, company: company.nom })"
             >
-              Supprimer
+              {{ 'companies.table.delete' | transloco }}
             </button>
           </div>
         </td>
       </tr>
     } @empty {
       <tr>
-        <td colspan="5" class="text-center text-muted">Aucune entreprise à afficher.</td>
+        <td colspan="5" class="text-center text-muted">{{ 'companies.table.empty' | transloco }}</td>
       </tr>
     }
   </tbody>

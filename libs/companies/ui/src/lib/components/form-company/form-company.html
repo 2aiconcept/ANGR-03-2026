@@ -1,6 +1,6 @@
 <form class="d-flex flex-column gap-3" (submit)="onSubmit($event)" novalidate>
   <div>
-    <label for="nom" class="form-label">Nom</label>
+    <label for="nom" class="form-label">{{ 'companies.fields.nom' | transloco }}</label>
     <input
       id="nom"
       type="text"
@@ -12,14 +12,14 @@
     @if (companyForm.nom().touched() && companyForm.nom().invalid()) {
       <div id="nom-errors" class="text-danger small mt-1" aria-live="polite">
         @for (error of companyForm.nom().errors(); track error.kind) {
-          <div>{{ error.message }}</div>
+          <div>{{ error.message | transloco }}</div>
         }
       </div>
     }
   </div>
 
   <div>
-    <label for="secteur" class="form-label">Secteur</label>
+    <label for="secteur" class="form-label">{{ 'companies.fields.secteur' | transloco }}</label>
     <input
       id="secteur"
       type="text"
@@ -31,14 +31,14 @@
     @if (companyForm.secteur().touched() && companyForm.secteur().invalid()) {
       <div id="secteur-errors" class="text-danger small mt-1" aria-live="polite">
         @for (error of companyForm.secteur().errors(); track error.kind) {
-          <div>{{ error.message }}</div>
+          <div>{{ error.message | transloco }}</div>
         }
       </div>
     }
   </div>
 
   <div>
-    <label for="adresse" class="form-label">Adresse</label>
+    <label for="adresse" class="form-label">{{ 'companies.fields.adresse' | transloco }}</label>
     <input
       id="adresse"
       type="text"
@@ -50,14 +50,14 @@
     @if (companyForm.adresse().touched() && companyForm.adresse().invalid()) {
       <div id="adresse-errors" class="text-danger small mt-1" aria-live="polite">
         @for (error of companyForm.adresse().errors(); track error.kind) {
-          <div>{{ error.message }}</div>
+          <div>{{ error.message | transloco }}</div>
         }
       </div>
     }
   </div>
 
   <div>
-    <label for="telephone" class="form-label">Téléphone</label>
+    <label for="telephone" class="form-label">{{ 'companies.fields.telephone' | transloco }}</label>
     <input
       id="telephone"
       type="tel"
@@ -69,13 +69,13 @@
     @if (companyForm.telephone().touched() && companyForm.telephone().invalid()) {
       <div id="telephone-errors" class="text-danger small mt-1" aria-live="polite">
         @for (error of companyForm.telephone().errors(); track error.kind) {
-          <div>{{ error.message }}</div>
+          <div>{{ error.message | transloco }}</div>
         }
       </div>
     }
   </div>
 
   <button type="submit" class="btn btn-primary" [disabled]="companyForm().invalid()">
-    {{ submitLabel() }}
+    {{ submitLabel() | transloco }}
   </button>
 </form>

@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CompaniesStore } from '@mini-crm/companies/data-access';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { TableCompany } from '@mini-crm/companies/ui';
 import { ConfirmDialog } from '@mini-crm/shared/ui';
 export type deleteItemPayload = {
@@ -10,7 +11,7 @@ export type deleteItemPayload = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-page-list-companies',
-  imports: [TableCompany, ConfirmDialog],
+  imports: [TableCompany, ConfirmDialog, TranslocoPipe],
   templateUrl: './page-list-companies.html',
   styleUrl: './page-list-companies.css',
 })
@@ -29,14 +30,6 @@ export default class PageListCompanies {
 
   /** Signal qui récupère l'id et le nom de la company à supprimer depuis table-company component */
   protected readonly pendingDeleteItem = signal<deleteItemPayload | null>(null);
-
-  /** Signal calculé automatiquement avec le nom de la companie qui return le message à envoyer à la boite de dialog */
-  protected readonly confirmMessage = computed(() => {
-    const item = this.pendingDeleteItem();
-    return item
-      ? `Voulez-vous vraiment supprimer « ${item.company} » ? Cette action est irréversible.`
-      : '';
-  });
 
   /** Redirige vers le formulaire d'ajout d'une entreprise. */
   protected onAddCompany(): void {

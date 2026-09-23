@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { provideRouter } from '@angular/router';
 
 import { Nav } from './nav';
@@ -9,7 +10,7 @@ describe('Nav', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Nav],
+      imports: [Nav, TranslocoTestingModule.forRoot({ langs: {} })],
       providers: [provideRouter([])],
     }).compileComponents();
 

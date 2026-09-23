@@ -1,0 +1,67 @@
+{
+  "header": {
+    "title": "Mini CRM",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "nav": {
+    "companies": "Entreprises",
+    "contacts": "Contacts",
+    "orders": "Commandes"
+  },
+  "confirmDialog": {
+    "title": "Confirmation",
+    "message": "Êtes-vous sûr ?",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "companies": {
+    "list": {
+      "title": "Entreprises",
+      "add": "Ajouter une entreprise"
+    },
+    "add": {
+      "title": "Ajouter une entreprise",
+      "submit": "Ajouter"
+    },
+    "edit": {
+      "title": "Modifier une entreprise",
+      "submit": "Enregistrer"
+    },
+    "delete": {
+      "title": "Supprimer l'entreprise",
+      "message": "Voulez-vous vraiment supprimer « {{ name }} » ? Cette action est irréversible.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    },
+    "fields": {
+      "nom": "Nom",
+      "secteur": "Secteur",
+      "adresse": "Adresse",
+      "telephone": "Téléphone"
+    },
+    "table": {
+      "caption": "Liste des entreprises",
+      "action": "Action",
+      "edit": "Éditer",
+      "delete": "Supprimer",
+      "empty": "Aucune entreprise à afficher."
+    },
+    "form": {
+      "submit": "Enregistrer",
+      "errors": {
+        "nomRequired": "Le nom est obligatoire.",
+        "secteurRequired": "Le secteur est obligatoire.",
+        "adresseRequired": "L'adresse est obligatoire.",
+        "telephoneRequired": "Le téléphone est obligatoire."
+      }
+    },
+    "errors": {
+      "load": "Impossible de charger les entreprises.",
+      "loadOne": "Impossible de charger l'entreprise.",
+      "add": "Impossible de créer l'entreprise.",
+      "update": "Impossible de modifier l'entreprise.",
+      "remove": "Impossible de supprimer l'entreprise."
+    }
+  }
+}

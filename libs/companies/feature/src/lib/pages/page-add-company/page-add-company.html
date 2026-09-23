@@ -1,8 +1,8 @@
-<h1 class="h3 mb-3">Ajouter une entreprise</h1>
+<h1 class="h3 mb-3">{{ 'companies.add.title' | transloco }}</h1>
 
-<!-- if signale error pour afficher un message d'erreur (celui api) -->
+<!-- if signal error pour afficher un message d'erreur (error() contient une clé de traduction) -->
 @if (error()) {
-  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  <div class="alert alert-danger" role="alert">{{ error() | transloco }}</div>
 }
 
-<app-form-company submitLabel="Ajouter" (save)="onSave($event)" />
+<app-form-company submitLabel="companies.add.submit" (save)="onSave($event)" />

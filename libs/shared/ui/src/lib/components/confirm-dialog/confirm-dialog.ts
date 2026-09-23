@@ -7,10 +7,11 @@ import {
   output,
   viewChild,
 } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [],
+  imports: [TranslocoPipe],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,11 +20,13 @@ export class ConfirmDialog {
   /** Ouvre (true) ou ferme (false) la boîte de dialogue. */
   readonly open = input.required<boolean>();
 
-  /** Textes affichés, personnalisables par la feature appelante. */
-  readonly title = input('Confirmation');
-  readonly message = input('Êtes-vous sûr ?');
-  readonly confirmLabel = input('Confirmer');
-  readonly cancelLabel = input('Annuler');
+  /** Clés de traduction des textes affichés, personnalisables par la feature appelante. */
+  readonly title = input('confirmDialog.title');
+  readonly cancelLabel = input('confirmDialog.cancel');
+  readonly confirmLabel = input('confirmDialog.confirm');
+
+  /** Message déjà traduit par le parent (il contient souvent une valeur, comme un nom). */
+  readonly message = input('');
 
   /** Événements émis vers le parent : action confirmée ou annulée. */
   readonly confirmed = output<void>();
